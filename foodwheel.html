@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>I'm In Love With Your Smile</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #ffe6f0;
+      text-align: center;
+      padding: 40px;
+      margin: 0;
+    }
+
+    h1 {
+      color: #4270d3;
+      margin-bottom: 10px;
+    }
+
+    #wheelCanvas {
+      margin-top: 20px;
+      transition: transform 5s ease-out;
+    }
+
+    #spinButton {
+      background: #5894ee;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      margin-top: 25px;
+      font-size: 18px;
+      cursor: pointer;
+      border-color: black;
+      border-width: 3px;
+      border-style: solid;
+    }
+
+    #arrow {
+      position: absolute;
+      top: 135px;
+      left: -160px;
+      width: 180px;
+      height: 180px;
+      transform: rotate(360deg);
+      z-index: 10;
+    }
+
+    .wheel-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    #recommendations {
+      display: none;
+      margin: 30px auto 0;
+      padding: 20px 30px;
+      background-color: #fff;
+      border: 2px solid #7ccfff;
+      border-radius: 10px;
+      max-width: 400px;
+      text-align: left;
+    }
+
+    #recommendations h2 {
+      color: #57b5f3;
+      font-size: 20px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    #recommendations ul {
+      padding-left: 20px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <h1>💙 Laysa's Food Wheel Spinner 💙</h1>
+
+  <div class="wheel-container">
+    <img src="carebear1.png" id="arrow" alt="Arrow" />
+    <canvas id="wheelCanvas" width="400" height="400"></canvas>
+  </div>
+
+  <br>
+  <button id="spinButton">Spin!</button>
+
+  <div id="recommendations">
+    <h2 id="foodTitle"></h2>
+    <ul id="spotList"></ul>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("wheelCanvas");
+    const ctx = canvas.getContext("2d");
+
+    const categories = ["Ramen", "Sushi", "Sandwiches", "Wings", "BBQ", "Salad", "Pizza", "Tacos", "Burgers", "Pasta"];
+    const colors = ["#03a9f4", "#3f51b5", "#9c27b0", "#e91e63", "#009688", "#cddc39", "#ff5722", "#ffc107", "#ff9800", "#4caf50"];
+
+    const spots = {
+      Ramen: [
+        "Ramen Tatsu-ya – Montrose", "JINYA Ramen Bar – Midtown", "Tiger Den – Chinatown",
+        "Ninja Ramen – Washington Ave", "Agu Ramen – Westchase", "Ramen Bar Ichi – Energy Corridor",
+        "Ramen Jin – Spring Branch", "Oni Ramen – Heights", "Soma – Upper Kirby", "Samurai Noodle – Midtown"
+      ],
+      Sushi: [
+        "Uchi – Montrose", "Kata Robata – Upper Kirby", "Nobu – Galleria",
+        "MF Sushi – Museum District", "Soma Sushi – Heights", "Blue Sushi Sake Grill – Midtown",
+        "Sushi by Hidden – Oak Forest", "Kuu – CityCentre", "Oishii – Greenway Plaza", "Sushiholic – Bellaire"
+      ],
+      Sandwiches: [
+        "Local Foods – Rice Village", "Mendocino Farms – Uptown", "Antone's Famous – Westheimer",
+        "Zelko Bistro – Heights", "Common Bond – Montrose", "Paulie's – Westheimer",
+        "The Cuban Station – Downtown", "Les Givral’s – Midtown", "Island Grill – Galleria", "Kraftsmen Cafe – Heights"
+      ],
+      Wings: [
+        "Big City Wings – Midtown", "Pluckers – Shepherd", "Sticky's Chicken – Sawyer Yards",
+        "BreWingZ – Westheimer", "Buffalo Wild Wings – Galleria", "The Waffle Bus – Heights",
+        "Bayou City Wings – Pasadena", "Just Wing It – Downtown", "Dak & Bop – Museum District", "Wing Quarter – Northside"
+      ],
+      BBQ: [
+        "Truth BBQ – Heights", "Pinkerton’s – Near Northside", "The Pit Room – Montrose",
+        "Killen’s – Pearland", "Ray’s BBQ Shack – 3rd Ward", "Tejas Chocolate – Tomball",
+        "Blood Bros – Bellaire", "Gatlin’s BBQ – Garden Oaks", "Roegels – Galleria", "Feges BBQ – Greenway Plaza"
+      ],
+      Salad: [
+        "Sweetgreen – Rice Village", "Salata – Galleria", "Local Foods – Heights",
+        "Bellagreen – CityCentre", "Barnaby’s – Midtown", "Flower Child – Uptown",
+        "True Food Kitchen – BLVD Place", "Green Fork – West U", "Pat Greer’s Kitchen – Montrose", "Nourish – Downtown"
+      ],
+      Pizza: [
+        "Star Pizza – Heights", "Luigi's – Midtown", "Pizaro's – Memorial", "Vinny’s – Downtown",
+        "Frank's Pizza – Downtown", "Tiny Champions – EaDo", "Bollo Woodfired – Montrose",
+        "Piola – Midtown", "BOH Pasta & Pizza – Heights", "Papa John's – Galleria"
+      ],
+      Tacos: [
+        "Velvet Taco – Washington", "Tacos Tierra Caliente – Montrose", "Taco Stand – Heights",
+        "La Calle – Downtown", "Cantina Barba – Northside", "Chilosos – Heights",
+        "Brothers Taco House – Downtown", "Liberty Taco – Galleria", "Fusion Taco – Midtown", "Laredo Taqueria – Washington"
+      ],
+      Burgers: [
+        "Hubcap Grill – Downtown", "Rodeo Goat – EaDo", "The Burger Joint – Montrose",
+        "Lankford Grocery – Midtown", "Becks Prime – Memorial", "BuffBurger – Energy Corridor",
+        "Hopdoddy – Rice Village", "Bernie’s Burger Bus – Bellaire", "Burger-Chan – Greenway", "Stacks – Katy"
+      ],
+      Pasta: [
+        "Paulie’s – Montrose", "Coppa Osteria – Rice Village", "North Italia – BLVD Place",
+        "ROMA – Westheimer", "Bollo Woodfired – Montrose", "Potente – Downtown",
+        "Ostia – Montrose", "Maggiano's – Galleria", "Rosie Cannonball – Montrose", "D’Amico’s – Rice Village"
+      ]
+    };
+
+    const radius = canvas.width / 2;
+    let currentRotation = 0;
+
+    function drawWheel() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const anglePerSegment = 2 * Math.PI / categories.length;
+
+  for (let i = 0; i < categories.length; i++) {
+    const startAngle = i * anglePerSegment;
+    const endAngle = startAngle + anglePerSegment;
+    const midAngle = startAngle + anglePerSegment / 2;
+
+    ctx.beginPath();
+    ctx.moveTo(radius, radius);
+    ctx.arc(radius, radius, radius, startAngle, endAngle);
+    ctx.fillStyle = colors[i];
+    ctx.fill();
+
+    ctx.save();
+    ctx.translate(radius, radius);
+    ctx.rotate(midAngle);
+    const deg = (midAngle * 180) / Math.PI;
+    const normalized = (deg + 360) % 360;
+    ctx.font = "bold 14px sans-serif";
+    ctx.fillStyle = "#000";
+    if (normalized >= 90 && normalized <= 270) {
+      ctx.rotate(Math.PI);
+      ctx.textAlign = "left";
+      ctx.fillText(categories[i], 20 - radius, 6);
+    } else {
+      ctx.textAlign = "right";
+      ctx.fillText(categories[i], radius - 20, 6);
+    }
+    ctx.restore();
+  }
+
+  // 🎆 Glowing border around the wheel
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(radius, radius, radius, 0, 2 * Math.PI);
+  ctx.lineWidth = 10;
+  ctx.strokeStyle = 'rgba(255, 192, 203, 0.1b)'; // very faint pink stroke
+  ctx.shadowColor = 'hotpink'; // pink glow
+  ctx.shadowBlur = 35;
+  ctx.stroke();
+  ctx.restore();
+}
+
+    drawWheel();
+
+    document.getElementById("spinButton").addEventListener("click", () => {
+      const extraSpins = 10;
+      const randomAngle = Math.random() * 360;
+      const totalRotation = 360 * extraSpins + randomAngle;
+      currentRotation += totalRotation;
+
+      canvas.style.transform = `rotate(${currentRotation}deg)`;
+
+      const segmentAngle = 360 / categories.length;
+      const finalRotation = currentRotation % 360;
+      const adjustedAngle = (360 - finalRotation + 180) % 360;
+      const pickedIndex = Math.floor(adjustedAngle / segmentAngle);
+      const pickedCategory = categories[pickedIndex];
+
+      setTimeout(() => {
+        const form = document.getElementById("recommendations");
+        const title = document.getElementById("foodTitle");
+        const spotList = document.getElementById("spotList");
+
+        title.textContent = `Top Houston Spots for ${pickedCategory}`;
+        spotList.innerHTML = "";
+        spots[pickedCategory].forEach(place => {
+          const li = document.createElement("li");
+          li.textContent = place;
+          spotList.appendChild(li);
+        });
+
+        form.style.display = "block";
+      }, 5200);
+    });
+  </script>
+</body>
+</html>

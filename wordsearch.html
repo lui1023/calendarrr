@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Te Quiero Mucho 💙</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #fce4ec;
+      text-align: center;
+    }
+
+    h2 { color: #ad1457; }
+
+    #puzzle {
+      display: inline-block;
+      border: 2px solid #f06292;
+      margin: 20px auto;
+      user-select: none;
+    }
+
+    .row { display: flex; }
+
+    .cell {
+      width: 30px;
+      height: 30px;
+      border: 1px solid #ccc;
+      font-size: 18px;
+      line-height: 30px;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .found { background-color: #c8e6c9; color: #2e7d32; }
+    .selected { background-color: #ffe082; }
+
+    #wordList {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      max-width: 220px;
+      margin: 20px auto;
+      padding: 0;
+      list-style: none;
+      justify-content: center;
+    }
+
+    #wordList li {
+      border: 2px solid #f06292;
+      background: #f8bbd0;
+      padding: 8px 12px;
+      border-radius: 5px;
+      text-align: center;
+    }
+
+    #wordList .foundWord {
+      background: #c8e6c9;
+      text-decoration: line-through;
+    }
+
+    button {
+      margin: 10px 8px;
+      padding: 8px 20px;
+      border: none;
+      background: #f06292;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 600px) {
+      .cell {
+        width: 22px;
+        height: 22px;
+        font-size: 12px;
+        line-height: 22px;
+      }
+
+      #wordList {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 220px;
+      }
+    }
+    .falling-peonies {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
+        overflow: hidden;
+      }
+
+      .peony {
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        background-image: url('babydog.png'); 
+        background-size: cover;
+        animation: fall linear 10s forwards;
+        opacity: 0;
+        will-change: transform;
+      }
+
+      @keyframes fall {
+        0% {
+          transform: translateY(-10px) rotate(0deg);
+          opacity: 0.3;
+        }
+        100% { 
+          transform: translateY(100vh) rotate(360deg);
+          opacity: 0.3;
+        }
+      }
+
+  </style>
+</head>
+<body>
+  <h2>Laysa's Word Search 💙</h2>
+  <p>Tap and drag across the words to find them, it should save your progress love 💙</p>
+  <p>Words are vertical and horizontal, reversed too but never diagonal heh</p>
+  <div id="puzzle"></div>
+  <ul id="wordList"></ul>
+  <button onclick="resetGrid()" style="border: 2px solid black;">Reset Grid (Shuffle)</button>
+  <button onclick="revealAll()" style="border: 2px solid black;">Reveal All</button>
+  
+
+  <script>
+    const allWords = [ "Laysa", "Luis", "Carebear", "Books", "Blue", "Tulips", "Prince", "Lilies", "Sunshine", "Puppies", "Beaches", "teAmoLaysa", "Titos", "Cows", "Roses", "Baseball", "Gym", "Travel", "Dancing", "Cooking", "Movies", "Music", "Hiking", "Coffee", "Chocolate", "Sushi", "Rainbows", "Stargazing", "Picnics", "Sunsets", "Alani", "Whataburger", "Roadtrips", "Museums", "Flowers", "Amorcito", "Hermosa", "Pool", "Tacos", "Horchata", "Mimosa", "Turbos", "Mangonada", "Familia"  ];
+    const gridSize = 14;
+    const maxWords = 10;
+    const directions = [ { x: 1, y: 0 }, { x: -1, y: 0 }, { x: 0, y: 1 }, { x: 0, y: -1 } ];
+    let grid = [], words = [], wordCoords = {};
+    let foundCoords = new Set(JSON.parse(localStorage.getItem("foundCoords") || "[]"));
+    let foundWordList = new Set(JSON.parse(localStorage.getItem("foundWords") || "[]"));
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function createEmptyGrid() {
+      return Array.from({ length: gridSize }, () => Array(gridSize).fill(""));
+    }
+
+    function canPlace(word, r, c, dir, gridRef) {
+      for (let i = 0; i < word.length; i++) {
+        const nr = r + i * dir.y;
+        const nc = c + i * dir.x;
+        if (nr < 0 || nr >= gridSize || nc < 0 || nc >= gridSize) return false;
+        if (gridRef[nr][nc] && gridRef[nr][nc] !== word[i]) return false;
+      }
+      return true;
+    }
+
+    function placeWordsIntoGrid() {
+      const tempGrid = createEmptyGrid();
+      wordCoords = {};
+      const lastWords = JSON.parse(localStorage.getItem("previousWords") || "[]");
+      let pool = allWords.filter(w => !lastWords.includes(w));
+      if (pool.length < maxWords) pool = allWords;
+      const selected = shuffle(pool).slice(0, maxWords);
+      const placed = [];
+
+      for (let word of selected) {
+        const options = [word.toUpperCase(), word.toUpperCase().split("").reverse().join("")];
+        let placedSuccessfully = false;
+
+        for (let opt of options) {
+          for (let tries = 0; tries < 100 && !placedSuccessfully; tries++) {
+            const dir = directions[Math.floor(Math.random() * directions.length)];
+            const r = Math.floor(Math.random() * gridSize);
+            const c = Math.floor(Math.random() * gridSize);
+            if (canPlace(opt, r, c, dir, tempGrid)) {
+              const coords = [];
+              for (let i = 0; i < opt.length; i++) {
+                const nr = r + i * dir.y;
+                const nc = c + i * dir.x;
+                tempGrid[nr][nc] = opt[i];
+                coords.push(`${nr}-${nc}`);
+              }
+              wordCoords[opt] = coords;
+              placedSuccessfully = true;
+              placed.push(word);
+              break;
+            }
+          }
+        }
+      }
+
+      words = placed;
+      localStorage.setItem("previousWords", JSON.stringify(placed));
+
+      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      for (let r = 0; r < gridSize; r++) {
+        for (let c = 0; c < gridSize; c++) {
+          if (!tempGrid[r][c]) {
+            tempGrid[r][c] = chars[Math.floor(Math.random() * chars.length)];
+          }
+        }
+      }
+
+      return tempGrid;
+    }
+
+    function renderGrid() {
+      const puzzle = document.getElementById("puzzle");
+      puzzle.innerHTML = "";
+      for (let r = 0; r < gridSize; r++) {
+        const rowDiv = document.createElement("div");
+        rowDiv.classList.add("row");
+        for (let c = 0; c < gridSize; c++) {
+          const cell = document.createElement("div");
+          cell.classList.add("cell");
+          cell.dataset.row = r;
+          cell.dataset.col = c;
+          cell.textContent = grid[r][c];
+          if (foundCoords.has(`${r}-${c}`)) {
+            cell.classList.add("found");
+          }
+          rowDiv.appendChild(cell);
+        }
+        puzzle.appendChild(rowDiv);
+      }
+    }
+
+    function renderWords() {
+      const ul = document.getElementById("wordList");
+      ul.innerHTML = "";
+      for (let word of words) {
+        const li = document.createElement("li");
+        li.textContent = word;
+        const up = word.toUpperCase();
+        const rev = up.split("").reverse().join("");
+        if (foundWordList.has(up) || foundWordList.has(rev)) {
+          li.classList.add("foundWord");
+        }
+        ul.appendChild(li);
+      }
+    }
+
+    function saveProgress() {
+      localStorage.setItem("foundCoords", JSON.stringify([...foundCoords]));
+      localStorage.setItem("foundWords", JSON.stringify([...foundWordList]));
+      localStorage.setItem("savedGrid", JSON.stringify(grid));
+      localStorage.setItem("placedWords", JSON.stringify(words));
+      localStorage.setItem("wordCoords", JSON.stringify(wordCoords));
+    }
+
+    function resetGrid() {
+      foundCoords = new Set();
+      foundWordList = new Set();
+      grid = placeWordsIntoGrid();
+      saveProgress();
+      renderGrid();
+      renderWords();
+    }
+
+    function revealAll() {
+      const coordsMap = JSON.parse(localStorage.getItem("wordCoords") || "{}");
+      for (let coordList of Object.values(coordsMap)) {
+        for (let coord of coordList) {
+          foundCoords.add(coord);
+        }
+      }
+      for (let word of words) {
+        foundWordList.add(word.toUpperCase());
+        foundWordList.add(word.toUpperCase().split("").reverse().join(""));
+      }
+      saveProgress();
+      renderGrid();
+      renderWords();
+    }
+
+    let isMouseDown = false;
+    let selected = [];
+
+    document.addEventListener("mousedown", (e) => {
+      if (e.target.classList.contains("cell")) {
+        isMouseDown = true;
+        selected = [e.target];
+        e.target.classList.add("selected");
+      }
+    });
+
+    document.addEventListener("mouseover", (e) => {
+      if (isMouseDown && e.target.classList.contains("cell") && !selected.includes(e.target)) {
+        selected.push(e.target);
+        e.target.classList.add("selected");
+      }
+    });
+
+    document.addEventListener("mouseup", () => {
+      checkSelection();
+    });
+
+    document.addEventListener("touchstart", (e) => {
+      const cell = e.target;
+      if (cell.classList.contains("cell")) {
+        isMouseDown = true;
+        selected = [cell];
+        cell.classList.add("selected");
+      }
+    });
+
+    document.addEventListener("touchmove", (e) => {
+      const touch = e.touches[0];
+      const el = document.elementFromPoint(touch.clientX, touch.clientY);
+      if (isMouseDown && el && el.classList.contains("cell") && !selected.includes(el)) {
+        selected.push(el);
+        el.classList.add("selected");
+      }
+    });
+
+    document.addEventListener("touchend", () => {
+      checkSelection();
+    });
+
+    function checkSelection() {
+      if (!selected.length) return;
+      const guess = selected.map(el => el.textContent).join("");
+      const reverse = guess.split("").reverse().join("");
+      const upperWords = words.map(w => w.toUpperCase());
+
+      if (upperWords.includes(guess) || upperWords.includes(reverse)) {
+        selected.forEach(el => {
+          el.classList.remove("selected");
+          el.classList.add("found");
+          foundCoords.add(`${el.dataset.row}-${el.dataset.col}`);
+        });
+        foundWordList.add(guess);
+        foundWordList.add(reverse);
+        saveProgress();
+        renderWords();
+      } else {
+        selected.forEach(el => el.classList.remove("selected"));
+      }
+      selected = [];
+      isMouseDown = false;
+    }
+
+    const savedGrid = localStorage.getItem("savedGrid");
+    const savedWords = localStorage.getItem("placedWords");
+    const savedCoords = localStorage.getItem("wordCoords");
+
+    if (savedGrid && savedWords && savedCoords) {
+      grid = JSON.parse(savedGrid);
+      words = JSON.parse(savedWords);
+      wordCoords = JSON.parse(savedCoords);
+      renderGrid();
+      renderWords();
+    } else {
+      grid = placeWordsIntoGrid();
+      saveProgress();
+      renderGrid();
+      renderWords();
+    }
+
+
+    // Let users scroll normally unless actively dragging on a word cell
+let isTouchDragging = false;
+
+document.addEventListener("touchstart", (e) => {
+  const target = e.target;
+  if (target.classList.contains("cell")) {
+    isTouchDragging = true;
+    isMouseDown = true;
+    selected = [target];
+    target.classList.add("selected");
+  }
+});
+
+document.addEventListener("touchmove", (e) => {
+  if (!isTouchDragging) return;
+
+  const touch = e.touches[0];
+  const el = document.elementFromPoint(touch.clientX, touch.clientY);
+  
+  if (el && el.classList.contains("cell") && !selected.includes(el)) {
+    selected.push(el);
+    el.classList.add("selected");
+  }
+
+  // Only prevent default if touching a puzzle cell (to allow natural scroll otherwise)
+  if (el && el.classList.contains("cell")) {
+    e.preventDefault();
+  }
+}, { passive: false });
+
+
+document.addEventListener("touchend", () => {
+  if (isTouchDragging) {
+    checkSelection();
+    isTouchDragging = false;
+  }
+});
+
+  </script>
+
+<div class="falling-peonies" id="peonyContainer"></div>
+<script>
+  const peonyContainer = document.getElementById("peonyContainer");
+  const recentPositions = [];
+  const spawnInterval = 10000; // one every 10 seconds
+  let flowerEl = null;
+
+  function getUniqueLeft() {
+    let newLeft;
+    let attempts = 0;
+    do {
+      const offset = Math.random();
+      const jitter = (Math.sin(Date.now() * offset + Math.random() * 1000) + 1) / 2;
+      newLeft = (10 + jitter * 80).toFixed(2);
+      attempts++;
+    } while (recentPositions.includes(newLeft) && attempts < 10);
+
+    recentPositions.push(newLeft);
+    if (recentPositions.length > 5) recentPositions.shift();
+
+    return newLeft;
+  }
+
+  function spawnSinglePeony() {
+    // Don't remove the last one, let it finish falling
+
+    flowerEl = document.createElement("div");
+    flowerEl.classList.add("peony");
+    flowerEl.style.left = getUniqueLeft() + "vw";
+    flowerEl.style.animationDuration = "10s";
+    flowerEl.style.animationDelay = "0s";
+    peonyContainer.appendChild(flowerEl);
+  }
+
+
+  spawnSinglePeony();
+  setInterval(spawnSinglePeony, spawnInterval);
+</script>
+
+</body>
+</html>

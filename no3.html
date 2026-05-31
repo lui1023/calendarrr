@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ouch</title>
+
+  <link rel="stylesheet" href="./style.css" />
+
+  <style>
+    .container .tenor-gif-embed {
+      max-width: 400px;
+      width: 100%;
+
+      /* White glowing outline */
+      border: 3px solid white;
+      border-radius: 12px;
+      box-shadow:
+        0 0 10px white,
+        0 0 20px white,
+        0 0 40px rgba(255, 255, 255, 0.8);
+
+      overflow: hidden;
+    }
+
+    /* Keep content above falling dogs */
+    .container {
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Falling dog images */
+    .falling-dog {
+      position: fixed;
+      top: -100px;
+      pointer-events: none;
+      z-index: 1;
+
+      animation: fall linear forwards;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translate(0, -100px) rotate(0deg);
+      }
+
+      25% {
+        transform: translate(40px, 25vh) rotate(90deg);
+      }
+
+      50% {
+        transform: translate(-40px, 50vh) rotate(180deg);
+      }
+
+      75% {
+        transform: translate(30px, 75vh) rotate(270deg);
+      }
+
+      100% {
+        transform: translate(-30px, calc(100vh + 150px)) rotate(360deg);
+      }
+    }
+
+    body {
+      overflow-x: hidden;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div
+      class="tenor-gif-embed"
+      data-postid="7775692"
+      data-share-method="host"
+      data-aspect-ratio="1.26923"
+      data-width="100%">
+      <a href="https://tenor.com/view/kickers-caught-gif-7775692">
+        lol
+      </a>
+      from
+      <a href="https://tenor.com/GMYy.gif">
+        loll
+      </a>
+    </div>
+
+    <script type="text/javascript" async src="https://tenor.com/embed.js"></script>
+
+    <h1>Okay then Laysa, you leave me no choice my love ☺️</h1>
+
+    <p>still love you tho!</p>
+
+    <div class="btn">
+      <a href="yes.html">Yes</a>
+      <a href="#" id="move-random">No</a>
+    </div>
+  </div>
+
+  <script src="./script.js"></script>
+
+  <script>
+    function createFallingDog() {
+      const dog = document.createElement("img");
+
+      dog.src = "babydog.png";
+      dog.classList.add("falling-dog");
+
+      dog.style.left = Math.random() * window.innerWidth + "px";
+
+      const size = Math.random() * 15 + 20; // 20px - 35px
+      dog.style.width = size + "px";
+
+      dog.style.animationDuration =
+        (Math.random() * 4 + 5) + "s";
+
+      document.body.appendChild(dog);
+
+      setTimeout(() => {
+        dog.remove();
+      }, 10000);
+    }
+
+    setInterval(createFallingDog, 100);
+  </script>
+</body>
+
+</html>

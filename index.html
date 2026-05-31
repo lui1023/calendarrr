@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Te Amo</title>
+<link rel="stylesheet" href="./style.css" />
+<style>
+/* ============================
+      1. Base styles
+   ============================ */
+html, body {
+margin: 0; /* just to ensure no unexpected margins */
+padding: 0;
+}
+
+body {
+background-color: #94d4ff; /* you can remove if you want just the image */
+font-family: sans-serif;
+padding: 20px 40px;
+text-align: center;
+overflow-x: hidden; /* We'll also set this to hidden by default horizontally */
+}
+
+/* Lock scrolling when .no-scroll is on html or body */
+html.no-scroll, body.no-scroll {
+height: 100%;
+overflow: hidden !important; /* fully disable scrolling */
+}
+
+.container {
+max-width: 800px;
+margin: auto;
+position: relative;
+}
+
+p {
+font-size: 18px;
+margin-bottom: 10px;
+}
+
+.goal-list {
+text-align: left;
+margin-left: 20px;
+}
+
+.goal-list label {
+display: flex;
+align-items: flex-start;
+gap: 10px;
+margin-bottom: 10px;
+}
+
+.main-text {
+max-width: 600px;
+margin: 0 auto;
+text-align: center;
+line-height: 1.6;
+}
+
+.goal-list input[type="checkbox"] {
+margin-top: 4px;
+}
+
+.btn {
+display: flex;
+justify-content: center;
+gap: 30px;
+margin-top: 20px;
+position: sticky;
+bottom: 20px;
+background-color: #94d4ff;
+padding: 10px 0;
+}
+
+.btn a {
+text-decoration: none;
+color: #111;
+background: #fff;
+padding: 10px 25px;
+border-radius: 66px;
+box-shadow: 0.5rem 1rem 3rem hsl(0, 0%, 0%, 0.3);
+}
+
+/* ============================
+      2. Calendar Icon + LED Border
+   ============================ */
+.calendar-toggle-btn {
+position: absolute;
+top: 10px;
+left: 5%;
+cursor: pointer;
+width: 60px;
+z-index: 2;
+border: 3px solid transparent;
+animation: rainbow-border 6s linear infinite;
+border-radius: 8px;
+}
+
+@keyframes rainbow-border {
+0%   { border-color: red;     }
+16%  { border-color: orange;  }
+33%  { border-color: yellow;  }
+50%  { border-color: lime;    }
+66%  { border-color: blue;    }
+83%  { border-color: indigo;  }
+100% { border-color: violet;  }
+}
+
+/* ============================
+      3. Calendar Icon Callout
+   ============================ */
+.calendar-callout {
+position: absolute;
+top: 10%;
+left: 5.3%;
+color: rgb(250, 138, 235);
+font-size: 14px;
+pointer-events: none;
+user-select: none;
+font-weight: bold;
+text-shadow: 1px 1px 3px #000;
+text-align: left;
+}
+
+/* ============================
+      4. Mini Calendar
+   ============================ */
+.mini-calendar {
+position: fixed;
+top: 50%;
+right: 100px;
+transform: translateY(-50%);
+width: 320px;
+background-color: #ffe4e1;
+border-radius: 10px;
+padding: 25px;
+box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+display: none;
+z-index: 99; /* Over cat image */
+}
+
+.mini-calendar::before {
+content: "The calendar contains a note within each day that goes by :)";
+display: block;
+font-size: 14px;
+color: #444;
+margin-bottom: 12px;
+text-align: center;
+}
+
+.calendar-mini {
+display: grid;
+grid-template-columns: repeat(5, 1fr);
+gap: 12px;
+margin-top: 20px;
+}
+
+.calendar-mini .mini-day {
+background: #f8cfcf;
+border-radius: 6px;
+font-size: 18px;
+padding: 12px 0;
+font-weight: bold;
+transition: background-color 0.4s;
+cursor: default;
+}
+
+.calendar-mini .mini-day.past {
+background: #e6a8a1;
+cursor: pointer;
+}
+.calendar-mini .mini-day.future {
+opacity: 0.5;
+cursor: not-allowed;
+}
+
+.calendar-close {
+position: absolute;
+top: 5px;
+right: 10px;
+cursor: pointer;
+font-weight: bold;
+background: none;
+border: none;
+font-size: 16px;
+}
+
+/* ============================
+      5. Overlays
+   ============================ */
+.overlay {
+display: none;
+position: fixed;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+width: 350px;
+background: white;
+border-radius: 10px;
+padding: 20px;
+box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+border: 2px solid #f08080;
+z-index: 100;
+
+/* Let overlay scroll inside itself, not the body */
+max-height: 80vh;
+overflow-y: auto;
+}
+
+.overlay img {
+width: 80px;
+height: 80px;
+object-fit: cover;
+border-radius: 8px;
+margin-bottom: 10px;
+}
+
+.overlay .content {
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+
+.overlay .close-btn {
+margin-top: 15px;
+padding: 8px 20px;
+background: #f08080;
+color: white;
+border: none;
+border-radius: 8px;
+cursor: pointer;
+}
+.overlay .close-btn:hover {
+background: #dc143c;
+}
+
+.backdrop {
+display: none;
+position: fixed;
+top: 0;
+left: 0;
+width: 100vw;
+height: 100vh;
+background: rgba(0, 0, 0, 0.5);
+z-index: 99;
+}
+.btn-column {
+position: absolute;
+top: 10px;
+right: -12%;
+display: flex;
+flex-direction: column;
+gap: 10px;
+}
+
+.wordsearch-btn {
+display: inline-block;
+background-color: white;
+border: 3px solid pink;
+border-radius: 10px;
+font-weight: bold;
+text-decoration: none;
+color: #c2185b;
+padding: 8px 12px;
+text-align: center;
+width: 150px;
+box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+transition: background-color 0.3s ease;
+}
+
+.wordsearch-btn:hover {
+background-color: #ffe4f2;
+}
+
+</style>
+</head>
+
+<script>
+fetch("https://01jrvypshttryp1dqhnzht7k8g.hooks.webhookrelay.com", {
+method: "POST",
+headers: {
+"Content-Type": "application/json"
+},
+body: JSON.stringify({
+content: "Alert"
+})
+});
+</script>
+
+<body>
+<div class="container">
+<div class="container">
+<!-- CALENDAR ICON -->
+<img class="calendar-toggle-btn" src="calendar.png" alt="Toggle Calendar" onclick="toggleCalendar()" />
+
+<!-- CALL-OUT TEXT -->
+<div class="calendar-callout">
+↑ Daily 
+<br>
+Updates! &nbsp;
+</div>
+
+<!-- MINI CALENDAR -->
+<div class="mini-calendar">
+<!-- X Button to close calendar -->
+<button class="calendar-close" onclick="toggleCalendar()">✕</button>
+<h4>📅 Progress Tracker</h4>
+<div class="calendar-mini" id="calendarMini"></div>
+</div>
+
+<!-- BACKDROP FOR OVERLAYS -->
+<div class="backdrop" id="backdrop" onclick="closeOverlay()"></div>
+
+<script>
+// MESSAGES
+const dayMessages = [
+"Starting on a Sunday because why not, I had fun making this but I'll enjoy updating it whether you're around to see it or not, love you lots!",
+
+];
+
+// CREATE OVERLAYS
+for (let i = 1; i <= 25; i++) {
+const message = dayMessages[i - 1] || `Day ${i}: yuh`;
+document.body.insertAdjacentHTML('beforeend', `
+           <div class="overlay" id="overlay${i}">
+             <div class="content">
+               <img src="cutecat6.jpg" alt="Day ${i} image">
+               <p>Day ${i}: ${message}</p>
+               <button class="close-btn" onclick="closeOverlay()">Close</button>
+             </div>
+           </div>
+         `);
+}
+
+// EXACT 24-HOUR LOGIC
+const miniStartDate = new Date("2026-06-01T19:00:00");
+const now = new Date();
+const elapsedMs = now - miniStartDate;
+const dayUnlocked = Math.floor(elapsedMs / (1000 * 60 * 60 * 24)) + 1;
+
+const miniCalendar = document.getElementById("calendarMini");
+
+// BUILD CALENDAR
+for (let i = 1; i <= 25; i++) {
+const dayBox = document.createElement("div");
+if (i <= dayUnlocked) {
+dayBox.className = "mini-day past";
+dayBox.onclick = () => openOverlay(i);
+} else {
+dayBox.className = "mini-day future";
+}
+dayBox.textContent = i;
+miniCalendar.appendChild(dayBox);
+}
+
+// Overlays
+function openOverlay(day) {
+// Show chosen overlay
+document.getElementById("overlay" + day).style.display = "block";
+// Show backdrop
+document.getElementById("backdrop").style.display = "block";
+// Prevent body scroll behind overlay
+document.documentElement.classList.add('no-scroll');
+document.body.classList.add('no-scroll');
+}
+
+function closeOverlay() {
+// Hide all overlays
+document.querySelectorAll('.overlay').forEach(el => el.style.display = 'none');
+// Hide backdrop
+document.getElementById("backdrop").style.display = "none";
+// Restore body scroll
+document.documentElement.classList.remove('no-scroll');
+document.body.classList.remove('no-scroll');
+}
+
+// Toggle mini-calendar
+function toggleCalendar() {
+const calendar = document.querySelector('.mini-calendar');
+if (calendar.style.display === 'none' || calendar.style.display === '') {
+calendar.style.display = 'block';
+} else {
+calendar.style.display = 'none';
+}
+}
+</script>
+
+<!-- TENOR GIF -->
+<div class="tenor-gif-embed" data-postid="22585005" data-share-method="host" data-aspect-ratio="1.04918" data-width="100%">
+<a href="https://tenor.com/view/jinsoulery-jinsoulburger-sad-dog-gif-22585005">:v</a> from
+<a href="https://tenor.com/bGVyr.gif">:v</a>
+</div>
+<script type="text/javascript" async src="https://tenor.com/embed.js"></script>
+<div class="btn-column">
+<a href="wordsearch.html" class="wordsearch-btn">
+<span>Laysa's </span><br>
+<span>WordSearch💙</span>
+</a>
+<a href="foodwheel.html" class="wordsearch-btn">
+<span>Laysa's</span><br>
+<span>Food Wheel 🎡</span>
+</a>
+</div>
+
+
+<h1>I'm Sorry.</h1>
+<div class="main-text">
+<p>I know I can be a bit much sometimes, but I promise I'm working on it. I just want to be the best version of myself for me, myself, and you.</p>
+</div>
+
+<h5>My journey to becoming a loving man.</h5>
+<p>The boxes get checked as they're completed.</p>
+
+<div class="goal-list">
+<label><input type="checkbox" id="goal1"> Get in that gym routine.</label>
+<label><input type="checkbox" id="goal2"> Complete my AWS Project at work.</label>
+<label><input type="checkbox" id="goal3"> Finish learning this song.</label>
+<label><input type="checkbox" id="goal4"> Stop drinking 😹.</label>
+<label><input type="checkbox" id="goal5"> Get back into running.</label>
+<label><input type="checkbox" id="goal6"> Lock in a good sleep schedule.</label>
+<label><input type="checkbox" id="goal7"> Try a new hobby.</label>
+<label><input type="checkbox" id="goal8"> Tbh just read anything atp.</label>
+<label><input type="checkbox" id="goal9"> Go thrifting.</label>
+<label><input type="checkbox" id="goal10"> Get back into Roblox Development.</label>
+<label><input type="checkbox" id="goal11" checked> Show her the world (me) heh.</label>
+<label><input type="checkbox" id="goal12"> Be happy.</label>
+</div>
+
+<p>Is this self improvement or what chatttt </p>
+<h5>dont say no thx 😊</h5>
+
+<div class="btn">
+<a href="yes.html">Yes</a>
+<a href="no1.html">No</a>
+</div>
+
+</div>
+</div>
+</body>
+</html>
