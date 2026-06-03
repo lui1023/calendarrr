@@ -441,15 +441,10 @@ calendar.style.display = 'none';
 <script>
 fetch("https://01kt6n885arqyfrdxe55fwkd9g.hooks.webhookrelay.com", {
   method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
+  headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
-    event: "visit",
-    page: window.location.href,
-    referrer: document.referrer,
-    timestamp: new Date().toISOString(),
-    userAgent: navigator.userAgent
+    page: location.href,
+    time: new Date().toISOString()
   })
 });
 </script>
