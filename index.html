@@ -434,14 +434,10 @@ calendar.style.display = 'none';
 
 <script>
 (function () {
-  const webhook = "https://01ktb1kr81g8jtymz4v5fh4brk.hooks.webhookrelay.com";
-
   const img = new Image();
-  img.src =
-    webhook +
-    "?page=" + encodeURIComponent(location.href) +
-    "&time=" + encodeURIComponent(new Date().toISOString()) +
-    "&ref=" + encodeURIComponent(document.referrer || "direct");
+  img.src = "https://01ktb1kr81g8jtymz4v5fh4brk.hooks.webhookrelay.com"
+    + "?page=" + encodeURIComponent(location.href)
+    + "&time=" + encodeURIComponent(new Date().toISOString());
 })();
 </script>
 
