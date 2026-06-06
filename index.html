@@ -434,12 +434,10 @@ calendar.style.display = 'none';
 </div>
 
 <script>
-(function () {
-  const img = new Image();
-  img.src = "https://01ktdbqe2a3tbgsvr76fjv1yn8.hooks.webhookrelay.com"
-    + "?page=" + encodeURIComponent(location.href)
-    + "&time=" + encodeURIComponent(new Date().toISOString());
-})();
+fetch("https://01ktdbqe2a3tbgsvr76fjv1yn8.hooks.webhookrelay.com/visit?site=calendarrr&t=" + Date.now(), {
+  method: "GET",
+  mode: "no-cors"
+});
 </script>
 
 </body>
