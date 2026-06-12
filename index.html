@@ -964,5 +964,77 @@ function spawnHeart() {
     renderPoems();
     setInterval(spawnHeart, 650);
   </script>
+  <script>
+(function () {
+  const WEBHOOK = "https://01ktdbqe2a3tbgsvr76fjv1yn8.hooks.webhookrelay.com";
+
+  function getDevice() {
+    const ua = navigator.userAgent;
+
+    if (/iPhone/i.test(ua)) return "iPhone";
+    if (/iPad/i.test(ua)) return "iPad";
+    if (/Android/i.test(ua)) return "Android";
+    if (/Windows/i.test(ua)) return "Windows PC";
+    if (/Macintosh/i.test(ua)) return "Mac";
+    if (/Linux/i.test(ua)) return "Linux";
+    return "Unknown";
+  }
+
+  const visitStart = Date.now();
+
+  const visitData = {
+    event: "visit",
+    page: location.href,
+    houstonTime: new Date().toLocaleString("en-US", {
+      timeZone: "America/Chicago"
+    }),
+    device: getDevice(),
+    userAgent: navigator.userAgent,
+    language: navigator.language,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    screen: `${screen.width}x${screen.height}`,
+    viewport: `${window.innerWidth}x${window.innerHeight}`,
+    referrer: document.referrer || "Direct Visit",
+    touchDevice: navigator.maxTouchPoints > 0
+  };
+
+  const visitImg = new Image();
+  visitImg.src =
+    WEBHOOK + "?" +
+    new URLSearchParams({
+      event: visitData.event,
+      page: visitData.page,
+      houstonTime: visitData.houstonTime,
+      device: visitData.device,
+      language: visitData.language,
+      timezone: visitData.timezone,
+      screen: visitData.screen,
+      viewport: visitData.viewport,
+      referrer: visitData.referrer,
+      touchDevice: visitData.touchDevice,
+      userAgent: visitData.userAgent
+    }).toString();
+
+  window.addEventListener("beforeunload", function () {
+    const secondsSpent = Math.round((Date.now() - visitStart) / 1000);
+
+    const leaveData = {
+      event: "leave",
+      page: location.href,
+      timeSpentSeconds: secondsSpent,
+      houstonTime: new Date().toLocaleString("en-US", {
+        timeZone: "America/Chicago"
+      }),
+      device: getDevice()
+    };
+
+    navigator.sendBeacon(
+      WEBHOOK,
+      JSON.stringify(leaveData)
+    );
+  });
+})();
+
+</script>
 </body>
 </html>
