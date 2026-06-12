@@ -1,515 +1,968 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Te Amo</title>
-<link rel="stylesheet" href="./style.css" />
-<style>
-/* ============================
-      1. Base styles
-   ============================ */
-html, body {
-margin: 0; /* just to ensure no unexpected margins */
-padding: 0;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Laysa's Poems ✍️💙</title>
+
+  <style>
+    :root {
+      --blue: #7ecbff;
+      --deep-blue: #2f65c8;
+      --pink: #ffd7ea;
+      --hot-pink: #ff7fbd;
+      --cream: #fff9fb;
+      --ink: #24324a;
+      --soft-shadow: 0 22px 70px rgba(47, 101, 200, 0.22);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", system-ui, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      color: var(--ink);
+      overflow-x: hidden;
+      background:
+        radial-gradient(circle at 15% 10%, rgba(255,255,255,0.95) 0 9%, transparent 26%),
+        radial-gradient(circle at 85% 18%, rgba(255,215,234,0.9) 0 12%, transparent 31%),
+        linear-gradient(135deg, #89d4ff 0%, #ffd7ea 45%, #fff7fb 100%);
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: auto;
+      width: 360px;
+      height: 360px;
+      border-radius: 50%;
+      filter: blur(10px);
+      opacity: 0.45;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::before {
+      left: -110px;
+      bottom: 10%;
+      background: rgba(255, 127, 189, 0.45);
+      animation: floatGlow 8s ease-in-out infinite;
+    }
+
+    body::after {
+      right: -120px;
+      top: 12%;
+      background: rgba(126, 203, 255, 0.6);
+      animation: floatGlow 10s ease-in-out infinite reverse;
+    }
+
+    @keyframes floatGlow {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-25px) scale(1.08); }
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 26px 0 60px;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 34px;
+    }
+
+    .home-link,
+    .tiny-pill {
+      text-decoration: none;
+      color: #16427d;
+      background: rgba(255, 255, 255, 0.65);
+      border: 1px solid rgba(255,255,255,0.8);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      backdrop-filter: blur(12px);
+      border-radius: 999px;
+      padding: 11px 18px;
+      font-weight: 800;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .home-link:hover,
+    .tiny-pill:hover {
+      transform: translateY(-2px);
+      background: #fff;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 28px;
+      align-items: center;
+      margin-bottom: 34px;
+    }
+
+    .hero-card {
+      background: rgba(255,255,255,0.68);
+      border: 1px solid rgba(255,255,255,0.9);
+      border-radius: 34px;
+      padding: clamp(26px, 5vw, 52px);
+      box-shadow: var(--soft-shadow);
+      backdrop-filter: blur(16px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::before {
+      content: "✦";
+      position: absolute;
+      right: 30px;
+      top: 22px;
+      font-size: 58px;
+      color: rgba(255, 127, 189, 0.38);
+      animation: twinkle 2.5s ease-in-out infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { transform: rotate(0deg) scale(1); opacity: .35; }
+      50% { transform: rotate(18deg) scale(1.2); opacity: .9; }
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(90deg, rgba(126,203,255,.5), rgba(255,215,234,.7));
+      border: 1px solid rgba(255,255,255,0.9);
+      color: #245596;
+      border-radius: 999px;
+      padding: 9px 14px;
+      font-weight: 900;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: clamp(2.45rem, 8vw, 5.7rem);
+      line-height: 0.92;
+      letter-spacing: -0.08em;
+      color: #24324a;
+      margin-bottom: 20px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(100deg, #2f65c8, #ff6db2, #2f65c8);
+      background-size: 220% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: shine 5s linear infinite;
+    }
+
+    @keyframes shine {
+      to { background-position: 220% center; }
+    }
+
+    .hero-card p {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      line-height: 1.75;
+      max-width: 620px;
+    }
+
+    .featured-poem {
+      border-radius: 32px;
+      background: linear-gradient(160deg, rgba(255,255,255,.82), rgba(255,215,234,.78));
+      border: 1px solid rgba(255,255,255,.9);
+      box-shadow: var(--soft-shadow);
+      padding: 30px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .featured-poem::after {
+      content: "💙";
+      position: absolute;
+      right: -8px;
+      bottom: -22px;
+      font-size: 120px;
+      opacity: .12;
+      transform: rotate(-12deg);
+    }
+
+    .featured-poem h2 {
+      font-size: 1.35rem;
+      color: #245596;
+      margin-bottom: 14px;
+    }
+
+    .featured-poem .poem-lines {
+      font-family: Georgia, serif;
+      font-size: 1.1rem;
+      line-height: 1.9;
+      white-space: pre-line;
+    }
+
+    .section-title {
+      text-align: center;
+      margin: 34px 0 20px;
+    }
+
+    .section-title h2 {
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      color: #245596;
+    }
+
+    .section-title p {
+      margin-top: 8px;
+      color: rgba(36, 50, 74, .78);
+    }
+
+    .poem-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .poem-card {
+      min-height: 240px;
+      border: 1px solid rgba(255,255,255,.88);
+      background: rgba(255,255,255,.68);
+      border-radius: 26px;
+      padding: 22px;
+      box-shadow: 0 16px 42px rgba(47, 101, 200, 0.16);
+      backdrop-filter: blur(12px);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .poem-card:hover {
+      transform: translateY(-7px) rotate(-.4deg);
+      box-shadow: 0 24px 55px rgba(47, 101, 200, 0.24);
+    }
+
+    .poem-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(126,203,255,.18), rgba(255,127,189,.22));
+      opacity: 0;
+      transition: opacity .2s ease;
+    }
+
+    .poem-card:hover::before { opacity: 1; }
+
+    .poem-card > * { position: relative; z-index: 1; }
+
+    .poem-date {
+      display: inline-block;
+      font-size: .8rem;
+      font-weight: 900;
+      color: #c2185b;
+      background: rgba(255,215,234,.75);
+      border-radius: 999px;
+      padding: 7px 11px;
+      margin-bottom: 14px;
+    }
+
+    .poem-card h3 {
+      font-size: 1.45rem;
+      margin-bottom: 12px;
+      color: #24324a;
+    }
+
+    .read-more {
+      margin-top: 18px;
+      font-weight: 900;
+      color: #2f65c8;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(14, 24, 49, .45);
+      z-index: 50;
+      backdrop-filter: blur(8px);
+    }
+
+    .modal.show { display: flex; }
+
+    .modal-content {
+      width: min(720px, 100%);
+      max-height: 88vh;
+      overflow: auto;
+      border-radius: 30px;
+      background: #fffafd;
+      border: 2px solid rgba(255,255,255,.85);
+      box-shadow: 0 30px 90px rgba(0,0,0,.28);
+      padding: clamp(24px, 5vw, 46px);
+      position: relative;
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      width: 42px;
+      height: 42px;
+      border: none;
+      border-radius: 50%;
+      background: #ffe4f2;
+      color: #c2185b;
+      font-size: 1.2rem;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .modal-content h2 {
+      color: #245596;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      margin: 14px 0 18px;
+    }
+
+    .modal-poem {
+      white-space: pre-line;
+      font-family: Georgia, serif;
+      font-size: 1.17rem;
+      line-height: 2;
+      color: #24324a;
+    }
+
+    .footer-note {
+      text-align: center;
+      margin-top: 34px;
+      padding: 20px;
+      color: rgba(36, 50, 74, .8);
+      font-weight: 700;
+    }
+
+    .floating-heart {
+      position: fixed;
+      bottom: -40px;
+      font-size: 18px;
+      opacity: .35;
+      pointer-events: none;
+      animation: rise 8s linear forwards;
+      z-index: 0;
+    }
+
+    @keyframes rise {
+      to {
+        transform: translateY(-115vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+.poem-preview {
+  color: rgba(36, 50, 74, .75);
+  line-height: 1.6;
+  font-family: Georgia, serif;
 }
 
-body {
-background-color: #94d4ff; /* you can remove if you want just the image */
-font-family: sans-serif;
-padding: 20px 40px;
-text-align: center;
-overflow-x: hidden; /* We'll also set this to hidden by default horizontally */
-}
+    .single-hero {
+      grid-template-columns: 1fr;
+      max-width: 860px;
+      margin-left: auto;
+      margin-right: auto;
+    }
 
-/* Lock scrolling when .no-scroll is on html or body */
-html.no-scroll, body.no-scroll {
-height: 100%;
-overflow: hidden !important; /* fully disable scrolling */
-}
+    .locked-card {
+      cursor: default;
+      opacity: .62;
+      filter: grayscale(.15);
+    }
 
-.container {
-max-width: 800px;
-margin: auto;
-position: relative;
-}
+    .locked-card:hover {
+      transform: none;
+      box-shadow: 0 16px 42px rgba(47, 101, 200, 0.16);
+    }
 
-p {
-font-size: 18px;
-margin-bottom: 10px;
-}
+    .locked-card .read-more {
+      color: #c2185b;
+    }
 
-.goal-list {
-text-align: left;
-margin-left: 20px;
-}
+    .unlock-note {
+      margin-top: 12px;
+      font-size: .92rem;
+      line-height: 1.5;
+      color: rgba(36, 50, 74, .68);
+      font-weight: 700;
+    }
 
-.goal-list label {
-display: flex;
-align-items: flex-start;
-gap: 10px;
-margin-bottom: 10px;
-}
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; }
+      .poem-grid { grid-template-columns: repeat(2, 1fr); }
+      .top-bar { align-items: stretch; flex-direction: column; }
+      .home-link, .tiny-pill { text-align: center; }
+    }
 
-.main-text {
-max-width: 600px;
-margin: 0 auto;
-text-align: center;
-line-height: 1.6;
-}
-
-.goal-list input[type="checkbox"] {
-margin-top: 4px;
-}
-
-.btn {
-display: flex;
-justify-content: center;
-gap: 30px;
-margin-top: 20px;
-position: sticky;
-bottom: 20px;
-background-color: #94d4ff;
-padding: 10px 0;
-}
-
-.btn a {
-text-decoration: none;
-color: #111;
-background: #fff;
-padding: 10px 25px;
-border-radius: 66px;
-box-shadow: 0.5rem 1rem 3rem hsl(0, 0%, 0%, 0.3);
-}
-
-/* ============================
-      2. Calendar Icon + LED Border
-   ============================ */
-.calendar-toggle-btn {
-position: absolute;
-top: 10px;
-left: 5%;
-cursor: pointer;
-width: 60px;
-z-index: 2;
-border: 3px solid transparent;
-animation: rainbow-border 6s linear infinite;
-border-radius: 8px;
-}
-
-@keyframes rainbow-border {
-0%   { border-color: red;     }
-16%  { border-color: orange;  }
-33%  { border-color: yellow;  }
-50%  { border-color: lime;    }
-66%  { border-color: blue;    }
-83%  { border-color: indigo;  }
-100% { border-color: violet;  }
-}
-
-/* ============================
-      3. Calendar Icon Callout
-   ============================ */
-.calendar-callout {
-position: absolute;
-top: 10%;
-left: 5.3%;
-color: rgb(250, 138, 235);
-font-size: 14px;
-pointer-events: none;
-user-select: none;
-font-weight: bold;
-text-shadow: 1px 1px 3px #000;
-text-align: left;
-}
-
-/* ============================
-      4. Mini Calendar
-   ============================ */
-.mini-calendar {
-position: fixed;
-top: 50%;
-right: 100px;
-transform: translateY(-50%);
-width: 320px;
-background-color: #ffe4e1;
-border-radius: 10px;
-padding: 25px;
-box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-display: none;
-z-index: 99; /* Over cat image */
-}
-
-.mini-calendar::before {
-content: "The calendar contains a note within each day that goes by :)";
-display: block;
-font-size: 14px;
-color: #444;
-margin-bottom: 12px;
-text-align: center;
-}
-
-.calendar-mini {
-display: grid;
-grid-template-columns: repeat(5, 1fr);
-gap: 12px;
-margin-top: 20px;
-}
-
-.calendar-mini .mini-day {
-background: #f8cfcf;
-border-radius: 6px;
-font-size: 18px;
-padding: 12px 0;
-font-weight: bold;
-transition: background-color 0.4s;
-cursor: default;
-}
-
-.calendar-mini .mini-day.past {
-background: #e6a8a1;
-cursor: pointer;
-}
-.calendar-mini .mini-day.future {
-opacity: 0.5;
-cursor: not-allowed;
-}
-
-.calendar-close {
-position: absolute;
-top: 5px;
-right: 10px;
-cursor: pointer;
-font-weight: bold;
-background: none;
-border: none;
-font-size: 16px;
-}
-
-/* ============================
-      5. Overlays
-   ============================ */
-.overlay {
-display: none;
-position: fixed;
-top: 50%;
-left: 50%;
-transform: translate(-50%, -50%);
-width: 350px;
-background: white;
-border-radius: 10px;
-padding: 20px;
-box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-border: 2px solid #f08080;
-z-index: 100;
-
-/* Let overlay scroll inside itself, not the body */
-max-height: 80vh;
-overflow-y: auto;
-}
-
-.overlay img {
-width: 80px;
-height: 80px;
-object-fit: cover;
-border-radius: 8px;
-margin-bottom: 10px;
-}
-
-.overlay .content {
-display: flex;
-flex-direction: column;
-align-items: center;
-}
-
-.overlay .close-btn {
-margin-top: 15px;
-padding: 8px 20px;
-background: #f08080;
-color: white;
-border: none;
-border-radius: 8px;
-cursor: pointer;
-}
-.overlay .close-btn:hover {
-background: #dc143c;
-}
-
-.backdrop {
-display: none;
-position: fixed;
-top: 0;
-left: 0;
-width: 100vw;
-height: 100vh;
-background: rgba(0, 0, 0, 0.5);
-z-index: 99;
-}
-.btn-column {
-position: absolute;
-top: 10px;
-right: -12%;
-display: flex;
-flex-direction: column;
-gap: 10px;
-}
-
-.wordsearch-btn {
-display: inline-block;
-background-color: white;
-border: 3px solid pink;
-border-radius: 10px;
-font-weight: bold;
-text-decoration: none;
-color: #c2185b;
-padding: 8px 12px;
-text-align: center;
-width: 150px;
-box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-transition: background-color 0.3s ease;
-}
-
-.wordsearch-btn:hover {
-background-color: #ffe4f2;
-}
-
-</style>
+    @media (max-width: 620px) {
+      .page { width: min(100% - 18px, 1120px); padding-top: 12px; padding-bottom: 42px; }
+      .top-bar { margin-bottom: 18px; }
+      .poem-grid { grid-template-columns: 1fr; gap: 14px; }
+      .hero { margin-bottom: 24px; }
+      .hero-card, .featured-poem, .modal-content { border-radius: 24px; }
+      .hero-card { padding: 24px 18px; }
+      .poem-card { min-height: auto; padding: 20px 18px; border-radius: 22px; }
+      .modal { padding: 10px; }
+      .modal-content { max-height: 86vh; padding: 26px 18px; }
+      .modal-poem { font-size: 1.05rem; line-height: 1.85; }
+      .close-modal { top: 12px; right: 12px; }
+    }
+  </style>
 </head>
-
 <body>
-<div class="container">
-<div class="container">
-<!-- CALENDAR ICON -->
-<img class="calendar-toggle-btn" src="calendar.png" alt="Toggle Calendar" onclick="toggleCalendar()" />
+  <main class="page">
+    <nav class="top-bar">
+    </nav>
 
-<!-- CALL-OUT TEXT -->
-<div class="calendar-callout">
-↑ Daily 
-<br>
-Updates! &nbsp;
-</div>
+    <section class="hero single-hero">
+      <div class="hero-card">
+        <div class="eyebrow">✍️ poems for Laysa</div>
+        <h1>little words,<br><span class="gradient-text">big feelings.</span></h1>
+        <p>
+        Some things are better left unsaid, I hope you keep enjoying the poems as much as I enjoy writing them !
+        Song of the day: Tengo Todo Excepto a Ti 🔥
+        </p>
+      </div>
+    </section>
 
-<!-- MINI CALENDAR -->
-<div class="mini-calendar">
-<!-- X Button to close calendar -->
-<button class="calendar-close" onclick="toggleCalendar()">✕</button>
-<h4>📅 Progress Tracker</h4>
-<div class="calendar-mini" id="calendarMini"></div>
-</div>
+    <section id="poemCollection">
+      <div class="section-title">
+        <h2>Daily Poems 💙</h2>
+        <p>One poem unlocks per day. The next one waits until tomorrow.</p>
+      </div>
 
-<!-- BACKDROP FOR OVERLAYS -->
-<div class="backdrop" id="backdrop" onclick="closeOverlay()"></div>
+      <div class="poem-grid" id="poemGrid"></div>
+    </section>
 
-<script>
-// MESSAGES
-const dayMessages = [
-"Starting on a Sunday because why not, I had fun making this but I'll enjoy updating it whether you're around to see it or not, love you lots!",
-"#WorstDayEver, but let's be real I went from chasing reality to chasing a dream, a man is nothing without his pride and I had to what I had to do to keep that intact 😹.",
-"I forgot to actually push the code yesterday whoops, I really don't know why I choose to continue updating this but I told myself I'd see the to the very end of this month no matter what happened, and the plan was always to update it even if we had stopped talking which I honestly expected with the way things were going LOL. Truth is I'm just not the type to chase someone who isn't wanted, I looked dumb doing it and no woman actually worth chasing would want that in a man, even I know it... anyways the whole point of this was to update myself on it so yea today was a chill day and it was really just workout while answering tickets so hecks ya..",
-"Literally just gym day, I really did like the rain though that was a nice change of pace, I know you would've hated it though 😹. Hope you're safe tonight.",
-"Today's definetely one of those I miss you kinda days.",
-"I think this is Saturday...? I'm not sure but yea this day was pretty interesting, had a fun little pregame with my cousins friends and those card games are so much funnnn, tbh I always have more fun at the pregame than the actual event itself, something about hanging out with friends and just vibing is def the move!",
-"Today was pretty chill, I picked up a new game I'm playing with my friends and it kinda motivated me to make a new game, dudeee that song I showed you ugh I loveeee it, my cousin didn't think it was all that but he's just a  hater heh. Anyways hope you're doing well.",
-"7pm more like 8pm haha sorry, uhhh today was chill for the most part.. I did WFH cause that buldak I had this weekend actually broke my immune system or something LOL but I have site visits tmrw then I get to go back to snacking at the office heh (no takis at home sadly) but yea ummm hope that the universe is treating my favorite girl okay, but if anything you've always got me there, song of the day will be.... I'd die without you by P.M Dawn, talk to you soon! (not really :c)",
-"Today was so tiring in the morning, had to move an internet thingy down to the middle of the trailer and there was like 15 ppl in orientation watching me the whole time i was like hecks nooo, then I show up at the office and I talked to cynthia for a bit but I didn't know she'd tell you stuff I said, which btw was AI obviously ! Anyways song of the day will be Volver Al Futuro by Oscar n Junior AyyyyyyH heh okay cya hope your day was as good as hearing your voice yesterday :)",
-"The day was amazinggggg, you kinda heard most of it which yea cant do that since we gotta wait for these updates but I really loved the reassurance you gave me without us fighting about it, a bit personal but yea I appreciated it hella, hope your day was good as well!",
-];
+    <div class="footer-note">
+      Happy readings.
+    </div>
+  </main>
 
-// CREATE OVERLAYS
-for (let i = 1; i <= 25; i++) {
-const message = dayMessages[i - 1] || `Day ${i}: yuh`;
-document.body.insertAdjacentHTML('beforeend', `
-           <div class="overlay" id="overlay${i}">
-             <div class="content">
-               <img src="rio.png" alt="Day ${i} image">
-               <p>Day ${i}: ${message}</p>
-               <button class="close-btn" onclick="closeOverlay()">Close</button>
-             </div>
-           </div>
-         `);
+  <div class="modal" id="poemModal" onclick="closePoem(event)">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closePoem(event)">×</button>
+      <span class="poem-date" id="modalDate"></span>
+      <h2 id="modalTitle"></h2>
+      <div class="modal-poem" id="modalPoem"></div>
+    </div>
+  </div>
+
+  <script>
+    const poems = [
+      {
+        title: "Her Favorite Color Was Blue.",
+        date: "Poem 01",
+        body: `Past every color in the rainbow,
+        He always stopped at blue,
+        The memories always came slow,
+        Like a quiet ocean view.
+        
+        He thought it was just a coincidence,
+        A habit he never outgrew,
+        Until one day it all made sense,
+        Her favorite color was blue.
+        `
+      },
+      {
+        title: "To be Honest",
+        date: "Poem 02",
+        body: `Like a leaf in the wind,
+        I was tossed and I turned,
+        Looking for signs in the distance
+        While bridges behind me burned.
+
+        To be honest,
+        Nothing felt more like flying,
+        Than the moment I let go of trying.
+
+        I was weightless, I was free,
+        I was finally just me,
+        And I never wanted to land,
+        But then I began to understand.
+
+        That every sky gets lonely,
+        No matter how perfect the view.
+
+        To be honest,
+        It should have always been with you.
+        `
+      },
+      {
+        title: "Another Day, Another Drop",
+        date: "Poem 03",
+        body: `It comes and goes,
+        Never quite the same,
+        A little drop of sunshine,
+        Or a little drop of rain.
+        
+        It can be the best day ever,
+        Or the worst day too,
+        But every drop is a memory,
+        And every drop is a part of you.
+        
+        He looks out past the window,
+        Nothing but a cloud or two,
+        He idles by waiting for the rain to show,
+        But the sun keeps shining through.
+        
+        She loves the sun, and she hates the rain,
+        But he loves her, so he'll take them both just the same.
+        It's just another day, another drop, but it's a drop that holds her name,`
+      },
+      {
+        title: "A Quiet Home",
+        date: "Poem 04",
+        body: `The moonlight spills like honey,
+        Through the windows filled with dreams,
+        A quiet home of memories,
+        Where love is more than it seems.
+        
+        What awaits beyond the starlit sky,
+        Is a world of endless curiosity,
+        But in this quiet home, beneath the night,
+        He finds himself wrapped in her tranquility.
+        
+        He wonders if she too feels the disconnect,
+        Between the world outside and the one they share,
+        But in this quiet home, where their hearts connect,
+        He knows that love is always there.
+        
+        So he'll stay a little longer, in this quiet home,
+        Where the moonlight spills like honey, and love is all they've ever known.
+        He doesn't need to chase the stars above, or seek out new horizons to roam,
+        Because in this quiet home, with her, he's already found his way back home.
+        
+        And in the stillness of the night, he realizes with a smile,
+        The home was never quiet,
+        The love was never silent,
+        The moon was never just a light,
+        It was the melody of her heart, that made everything feel so right.`
+
+      },
+      {
+        title: "His Reflection",
+        date: "Poem 05",
+        body: `He sits across from it,
+        It stares back at him,
+        
+        The same hands that once reached for another drink,
+        Now wishes to reach for her instead,
+        No need for crowded rooms or flashing lights,
+        Just the quiet company of her voice he wishes would never end.
+
+        He spent years trying to outrun the silence,
+        Mistaking the noise for being alive,
+        Pouring his sorrows into empty glasses,
+        Hoping that she would finally arrive.
+
+        Wait lowkey timeout,
+        He thinks to himself,
+        Maybe it's not her he's waiting for,
+        In the quiet moments, when the world slows down,
+        He realizes that he's been waiting for himself to be found.`
+      },
+      {
+        title: "Those Neighborhood Dogs",
+        date: "Poem 06",
+        body: `Every afternoon, 
+        The neighborhood dogs come out to play,
+        
+        Cute little pups with wagging tails and floppy ears,
+        Ready to chase a ball or make new friends without any fears.
+        
+        Little paws prance across the pavement,
+        Tails wagging with a purpose to be free,
+        As if every blade of grass,
+        Holds a mystery only they can see.
+        
+        He sits back and watches the joyful show,
+        A gentle smile begins to slowly grow,
+        How happiness can fit inside a game,
+        Yet somehow every day still feels the same.
+
+        Because no matter how adorable those neighborhood dogs may seem,
+        Or how playful they are when they run and gleam,
+        His thoughts always wonder back to you,
+        The prettiest thing those eyes have ever seen.
+
+        The dogs are cute,
+        That's certainly true,
+
+        But if they handed out awards each day,
+        For the one who stole his heart away,
+        First place would always go to you.
+        `
+      },
+      {
+        title: "You The Birthday",
+        date: "Poem 07",
+        body: `It's not her birthday,
+        I checked twice today,
+        But everytime I see her,
+        My brain says it anyway.
+
+        No cake on the table,
+        No candles on display,
+        No reason to celebrate,
+        But somehow here we stay.
+
+        Perhaps it's her smile,
+        Maybe it's her eyes,
+        Maybe it's the way she laughs,
+        I wouldn't know, I'm not that wise.
+
+        All I know is that when I'm with her,
+        She never fails to make my day,
+        So if someone asks me why,
+        I'll just say, "she da birthday."
+        `
+      },
+      {
+        title: "Floatin Like a Boat",
+        date: "Poem 08",
+        body: `He spent years patching holes,
+        In a boat that wouldn't sink,
+        Fixing problems that weren't there,
+        Before he'd stop to think.
+        
+        Every creak became a warning,
+        Every wave became a sign,
+        As if disaster sat waiting,
+        Just waiting for the next wave to come by,
+        
+        He was so busy preparing,
+        For waters that were rough and cold,
+        That he forgot to enjoy them,
+        Or so he's often told.
+        
+        The funny thing about boats,
+        Is they were built to sway,
+        Not every movement means you're lost,
+        Sometimes that's just the bay.
+        
+        So now he lets the water move,
+        And takes it day by day, 
+        Because a boat that fears the ocean,
+        Was never meant to sail away.`
+      },
+      {
+        title: "Her Hair",
+        date: "Poem 09",
+        body: `He notices her hair,
+        More often than he'll admit,
+        The way it falls around her shoulders,
+        Like cinderalla, it always fit.
+        
+        Some days it's neatly brushed,
+        Other days it does its own thing,
+        Yet somehow every version of it,
+        Feels deserving of a painting.
+        
+        He swears it catches sunlight, 
+        In a way he's never understood,
+        Turning ordinary moments,
+        Into something remarkably good.
+        
+        To some it's just hair,
+        At least that's what people say,
+        But when it's attached to her,
+        It's never ordinary in any way.
+        
+        You may not be mine,
+        But I'll always love the way it shines.`
+
+      },
+      {
+        title: "The Trophy.",
+        date: "Poem 10",
+        body: `There comes a time when the whole world cheers.
+        It comes every four years.
+        Where hopes and dreams become reality.
+        As every fan loses their sanity.
+
+        The flags start waving.
+        The streets come alive,
+        Where a kick can break you,
+        And a goal can revive.
+
+        Kids wear their favorite jerseys,
+        Dreaming their team succeeds,
+        Seeing their name in the paper,
+        For the whole world to read.
+
+        They play for the glory,
+        The lights and the fame,
+        The chance to be remembered,
+        Long after the game.
+
+        I used to get it,
+        Or atleast I think,
+        The need to keep chasing,
+        The edge of the brink.
+
+        To hold something golden,
+        Above the rest of the noise,
+        To prove to the world,
+        That I was one of the boys.
+
+        But trophies are but an object,
+        They sit and collect dust,
+        They look good on shelves,
+        But rust if they must.
+
+        In the very end,
+        The crowds all go home,
+        The cameras all leave,
+        And eventually these memories,
+        Become hard to retrieve.
+
+        That's when I think of you,
+        And everything shifts,
+        Because you were never,
+        The kind of thing someone lifts.
+
+        You weren't made of gold,
+        Or silver or stone,
+        Yet somehow you shine,
+        More than all of them shown.
+
+        If I won the World Cup,
+        On the biggest night,
+        With the whole world watching,
+        Beneath every light,
+
+        I'd probably smile,
+        I'd probably grin,
+        But it still wouldn't compare,
+        To the day you walked in.
+
+        Because people chase trophies,
+        Their whole lives through,
+        And all this time,
+        Mine looked at you.
+
+        Maybe not mine,
+        That's a different story,
+        But you'll always be,
+        My version of glory.`
+      },
+            {
+        title: "Its Wings Grew Tired.",
+        date: "Poem 11",
+        body: `A butterfly grew restless,
+        Staring past the trees,
+        Wondering what existed
+        Beyond the summer breeze.
+
+        The meadow wasn't awful,
+        The flowers weren't bad,
+        It just couldn't shake the feeling
+        That there was more to be had.
+
+        So one morning it left,
+        Without much of a plan,
+        Which sounds pretty stupid,
+        But sometimes that's how journeys began.
+
+        The first few days were easy,
+        The weather played along,
+        It almost started thinking
+        It couldn't go wrong.
+
+        Then came the wind,
+        Then came the rain,
+        Then came a hundred reasons
+        To turn right back again.
+
+        Some flowers looked beautiful,
+        Then wilted in a week,
+        Some seemed completely ordinary,
+        Yet offered what it sought to seek.
+
+        There were days it felt lost,
+        Days it felt free,
+        Days it missed the meadow,
+        More than it wanted to be.
+
+        But every time it stopped,
+        And looked at where it stood,
+        Going back felt comfortable,
+        Yet moving felt more good.
+
+        That's the strange thing about adventure,
+        It rarely feels the way you think,
+        It's less standing on a mountain,
+        More standing on the brink.
+
+        Somewhere along the journey,
+        Between the highs and lows,
+        It realized love and adventure
+        Are closer than anyone knows.
+
+        Both ask you to risk something,
+        Both ask you to be brave,
+        Both can leave you smiling,
+        Or leave you in a grave.
+
+        Still, given the choice,
+        It would've done it all again,
+        Because a life spent wondering
+        Is its own kind of pain.
+
+        So the butterfly kept flying,
+        No finish line in view,
+        Chasing a life worth living,
+        And maybe a flower too.`
+      },
+{
+title: "Where the sun went.",
+date: "Poem 12",
+body: `A shadow followed quietly,
+      Wherever the sunlight went,
+      Never asking for a reason,
+      Never wondering what it meant.
+
+      Some days were bright,
+      Some days were gray,
+
+      Yet it stayed beside the light,
+      Anyway.
+
+      People notice sunshine,
+      They rarely notice shade,
+      That's just the way
+      Some things are made.
+
+      But every now and then,
+      The light would laugh,
+
+      And somehow that alone
+      Was enough.
+
+      Evening always came,
+      As evening tends to do,
+      Stretching shadows thinner
+      Until they slipped from view.
+
+      Yet if tomorrow brought sunlight,
+      It knew exactly what it'd do.
+
+      Follow it again,
+      Without being asked to.`
 }
 
-// EXACT 24-HOUR LOGIC
-const miniStartDate = new Date("2026-06-01T19:00:00");
-const now = new Date();
-const elapsedMs = now - miniStartDate;
-const dayUnlocked = Math.floor(elapsedMs / (1000 * 60 * 60 * 24)) + 1;
+      
+    ];
 
-const miniCalendar = document.getElementById("calendarMini");
+    const poemGrid = document.getElementById("poemGrid");
+    const modal = document.getElementById("poemModal");
+    const modalDate = document.getElementById("modalDate");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalPoem = document.getElementById("modalPoem");
 
-// BUILD CALENDAR
-for (let i = 1; i <= 25; i++) {
-const dayBox = document.createElement("div");
-if (i <= dayUnlocked) {
-dayBox.className = "mini-day past";
-dayBox.onclick = () => openOverlay(i);
-} else {
-dayBox.className = "mini-day future";
-}
-dayBox.textContent = i;
-miniCalendar.appendChild(dayBox);
-}
+    const poemStartDate = new Date("2026-06-01T19:00:00");
+    const today = new Date();
+    const elapsed = today - poemStartDate;
+    const unlockedPoemCount = Math.max(1, Math.min(poems.length, Math.floor(elapsed / (1000 * 60 * 60 * 24)) + 1));
 
-// Overlays
-function openOverlay(day) {
-// Show chosen overlay
-document.getElementById("overlay" + day).style.display = "block";
-// Show backdrop
-document.getElementById("backdrop").style.display = "block";
-// Prevent body scroll behind overlay
-document.documentElement.classList.add('no-scroll');
-document.body.classList.add('no-scroll');
-}
+    function renderPoems() {
+      poemGrid.innerHTML = "";
+      poems.forEach((poem, index) => {
+        const isUnlocked = index < unlockedPoemCount;
+        const card = document.createElement("article");
+        card.className = isUnlocked ? "poem-card" : "poem-card locked-card";
+        card.tabIndex = isUnlocked ? 0 : -1;
 
-function closeOverlay() {
-// Hide all overlays
-document.querySelectorAll('.overlay').forEach(el => el.style.display = 'none');
-// Hide backdrop
-document.getElementById("backdrop").style.display = "none";
-// Restore body scroll
-document.documentElement.classList.remove('no-scroll');
-document.body.classList.remove('no-scroll');
-}
+        if (isUnlocked) {
+          card.innerHTML = `
+            <span class="poem-date">${poem.date}</span>
+            <h3>${poem.title}</h3>
+            <div class="read-more">Read poem →</div>
+          `;
+          card.onclick = () => openPoem(index);
+          card.onkeydown = (event) => {
+            if (event.key === "Enter" || event.key === " ") openPoem(index);
+          };
+        } else {
+          card.innerHTML = `
+            <span class="poem-date">Poem ${String(index + 1).padStart(2, "0")}</span>
+            <h3>Locked for now 💌</h3>
+            <p class="poem-preview">This poem is waiting for its day.</p>
+            <div class="read-more">Unlocks on day ${index + 1}</div>
+            <p class="unlock-note">Come back tomorrow for the next one.</p>
+          `;
+        }
 
-// Toggle mini-calendar
-function toggleCalendar() {
-const calendar = document.querySelector('.mini-calendar');
-if (calendar.style.display === 'none' || calendar.style.display === '') {
-calendar.style.display = 'block';
-} else {
-calendar.style.display = 'none';
-}
-}
-</script>
+        poemGrid.appendChild(card);
+      });
+    }
 
-<!-- TENOR GIF -->
-<div class="tenor-gif-embed" data-postid="22585005" data-share-method="host" data-aspect-ratio="1.04918" data-width="100%">
-<a href="https://tenor.com/view/jinsoulery-jinsoulburger-sad-dog-gif-22585005">:v</a> from
-<a href="https://tenor.com/bGVyr.gif">:v</a>
-</div>
-<script type="text/javascript" async src="https://tenor.com/embed.js"></script>
-<div class="btn-column">
-<a href="wordsearch.html" class="wordsearch-btn">
-<span>Laysa's </span><br>
-<span>WordSearch💙</span>
-</a>
-<a href="foodwheel.html" class="wordsearch-btn">
-<span>Laysa's</span><br>
-<span>Food Wheel 🎡</span>
-</a>
-<a href="poem.html" class="wordsearch-btn">
-    <span>Laysa's</span><br>
-    <span>Poems 📖💙</span>
-</a>
-</div>
+    function openPoem(index) {
+      const poem = poems[index];
+      modalDate.textContent = poem.date;
+      modalTitle.textContent = poem.title;
+      modalPoem.textContent = poem.body;
+      modal.classList.add("show");
+      document.body.style.overflow = "hidden";
+    }
 
+    function closePoem(event) {
+      if (event && event.target !== modal && !event.target.classList.contains("close-modal")) return;
+      modal.classList.remove("show");
+      document.body.style.overflow = "";
+    }
 
-<h1>I'm Sorry.</h1>
-<div class="main-text">
-<p>I know I can be a bit much sometimes, but I promise I'm working on it. I just want to be the best version of myself for me, myself, and you.</p>
-</div>
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        modal.classList.remove("show");
+        document.body.style.overflow = "";
+      }
+    });
 
-<h5>My journey to becoming a loving man.</h5>
-<p>The boxes get checked as they're completed.</p>
+function spawnHeart() {
+  const useImage = Math.random() < 0.33;
 
-<div class="goal-list">
-<label><input type="checkbox" id="goal1"> Get in that gym routine.</label>
-<label><input type="checkbox" id="goal2"> Complete my AWS Project at work.</label>
-<label><input type="checkbox" id="goal3"> Finish learning this song.</label>
-<label><input type="checkbox" id="goal4"> Stop drinking 😹.</label>
-<label><input type="checkbox" id="goal5"> Get back into running.</label>
-<label><input type="checkbox" id="goal6"> Lock in a good sleep schedule.</label>
-<label><input type="checkbox" id="goal7"> Try a new hobby.</label>
-<label><input type="checkbox" id="goal8"> Tbh just read anything atp.</label>
-<label><input type="checkbox" id="goal9"> Go thrifting.</label>
-<label><input type="checkbox" id="goal10"> Get back into Roblox Development.</label>
-<label><input type="checkbox" id="goal11" checked> Show her the world (me) heh.</label>
-<label><input type="checkbox" id="goal12"> Be happy.</label>
-</div>
+  let element;
 
-<p> Would you like to see my cool picsss</p>
-<h5>dont say no thx 😊</h5>
-
-<div class="btn">
-<a href="yes.html">Yes</a>
-<a href="no1.html">No</a>
-</div>
-
-</div>
-</div>
-
-<script>
-(function () {
-  const WEBHOOK = "https://01ktdbqe2a3tbgsvr76fjv1yn8.hooks.webhookrelay.com";
-
-  function getDevice() {
-    const ua = navigator.userAgent;
-
-    if (/iPhone/i.test(ua)) return "iPhone";
-    if (/iPad/i.test(ua)) return "iPad";
-    if (/Android/i.test(ua)) return "Android";
-    if (/Windows/i.test(ua)) return "Windows PC";
-    if (/Macintosh/i.test(ua)) return "Mac";
-    if (/Linux/i.test(ua)) return "Linux";
-    return "Unknown";
+  if (useImage) {
+    element = document.createElement("img");
+    element.src = "babydog.png";
+    element.style.width = (Math.random() * 20 + 25) + "px";
+    element.style.height = "auto";
+  } else {
+    element = document.createElement("div");
+    element.textContent = Math.random() > 0.5 ? "💙" : "🌸";
+    element.style.fontSize = (Math.random() * 12 + 14) + "px";
   }
 
-  const visitStart = Date.now();
+  element.className = "floating-heart";
+  element.style.left = Math.random() * 100 + "vw";
+  element.style.animationDuration = (Math.random() * 4 + 6) + "s";
 
-  const visitData = {
-    event: "visit",
-    page: location.href,
-    houstonTime: new Date().toLocaleString("en-US", {
-      timeZone: "America/Chicago"
-    }),
-    device: getDevice(),
-    userAgent: navigator.userAgent,
-    language: navigator.language,
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    screen: `${screen.width}x${screen.height}`,
-    viewport: `${window.innerWidth}x${window.innerHeight}`,
-    referrer: document.referrer || "Direct Visit",
-    touchDevice: navigator.maxTouchPoints > 0
-  };
+  document.body.appendChild(element);
 
-  const visitImg = new Image();
-  visitImg.src =
-    WEBHOOK + "?" +
-    new URLSearchParams({
-      event: visitData.event,
-      page: visitData.page,
-      houstonTime: visitData.houstonTime,
-      device: visitData.device,
-      language: visitData.language,
-      timezone: visitData.timezone,
-      screen: visitData.screen,
-      viewport: visitData.viewport,
-      referrer: visitData.referrer,
-      touchDevice: visitData.touchDevice,
-      userAgent: visitData.userAgent
-    }).toString();
+  setTimeout(() => {
+    element.remove();
+  }, 10000);
+}
 
-  window.addEventListener("beforeunload", function () {
-    const secondsSpent = Math.round((Date.now() - visitStart) / 1000);
-
-    const leaveData = {
-      event: "leave",
-      page: location.href,
-      timeSpentSeconds: secondsSpent,
-      houstonTime: new Date().toLocaleString("en-US", {
-        timeZone: "America/Chicago"
-      }),
-      device: getDevice()
-    };
-
-    navigator.sendBeacon(
-      WEBHOOK,
-      JSON.stringify(leaveData)
-    );
-  });
-})();
-
-</script>
-
+    renderPoems();
+    setInterval(spawnHeart, 650);
+  </script>
 </body>
 </html>
