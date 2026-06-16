@@ -401,6 +401,152 @@
       font-weight: 700;
     }
 
+
+    /* Tulip intro animation for Poem 15 */
+    .tulip-intro {
+      position: fixed;
+      inset: 0;
+      background: rgba(255, 250, 253, 0.98);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .tulip-intro.show {
+      display: flex;
+    }
+
+    .tulip {
+      position: relative;
+      width: 120px;
+      height: 250px;
+    }
+
+    .stem {
+      position: absolute;
+      bottom: 0;
+      left: 56px;
+      width: 8px;
+      height: 0;
+      background: #3ea85a;
+      border-radius: 999px;
+      animation: growStem 1.3s forwards;
+    }
+
+    .leaf {
+      position: absolute;
+      width: 55px;
+      height: 22px;
+      background: #57c76f;
+      border-radius: 100px;
+      opacity: 0;
+    }
+
+    .leaf-left {
+      left: 12px;
+      bottom: 70px;
+      transform: rotate(-35deg);
+      animation: showLeaf .5s 1s forwards;
+    }
+
+    .leaf-right {
+      right: 12px;
+      bottom: 105px;
+      transform: rotate(35deg);
+      animation: showLeaf .5s 1.15s forwards;
+    }
+
+    .flower {
+      position: absolute;
+      top: 8px;
+      left: 24px;
+      opacity: 0;
+      animation: bloom .85s 1.45s forwards;
+    }
+
+    .petal {
+      position: absolute;
+      width: 42px;
+      height: 64px;
+      background: #ff7fbd;
+      border-radius: 50% 50% 8px 8px;
+      box-shadow: 0 10px 30px rgba(255, 127, 189, 0.3);
+    }
+
+    .p1 {
+      left: 18px;
+      z-index: 2;
+    }
+
+    .p2 {
+      left: 0;
+      transform: rotate(-22deg);
+      transform-origin: bottom center;
+    }
+
+    .p3 {
+      left: 36px;
+      transform: rotate(22deg);
+      transform-origin: bottom center;
+    }
+
+    @keyframes growStem {
+      to { height: 180px; }
+    }
+
+    @keyframes showLeaf {
+      to { opacity: 1; }
+    }
+
+    @keyframes bloom {
+      from {
+        opacity: 0;
+        transform: translateY(20px) scale(.15);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+
+    .tulip-message {
+      position: fixed;
+      left: 50%;
+      top: 68%;
+      transform: translateX(-50%);
+      text-align: center;
+      color: #24324a;
+      opacity: 0;
+      font-size: 1.25rem;
+      line-height: 1.8;
+      font-family: Georgia, serif;
+      animation: fadeWords 1.5s ease forwards;
+      animation-delay: 2s;
+    }
+
+    .tulip-message div:first-child {
+      font-style: italic;
+    }
+
+    .tulip-message div:last-child {
+      font-size: 1.6rem;
+      font-weight: 500;
+    }
+
+    @keyframes fadeWords {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+
     @media (max-width: 900px) {
       .hero { grid-template-columns: 1fr; }
       .poem-grid { grid-template-columns: repeat(2, 1fr); }
@@ -433,9 +579,12 @@
         <div class="eyebrow">✍️ poems for Laysa</div>
         <h1>little words,<br><span class="gradient-text">big feelings.</span></h1>
         <p>
-        Some things are better left unsaid, I hope you keep enjoying the poems as much as I enjoy writing them ! 
-        Song of the day: JBalvin BZRP Music Sessions #62/66 🎵🎵🎵
-        </p>
+  <i>I'd write these every day for the rest of my life if it meant I could give you something to look forward to.</i>
+</p>
+
+<p>
+  Song of the day: Sirena - Danny Lux 🎵🎵🎵
+</p>
       </div>
     </section>
 
@@ -452,6 +601,25 @@
       Happy readings.
     </div>
   </main>
+
+
+  <div id="tulipIntro" class="tulip-intro">
+    <div class="tulip">
+      <div class="stem"></div>
+      <div class="leaf leaf-left"></div>
+      <div class="leaf leaf-right"></div>
+      <div class="flower">
+        <span class="petal p1"></span>
+        <span class="petal p2"></span>
+        <span class="petal p3"></span>
+      </div>
+
+      <div class="tulip-message">
+        <div>in the end,</div>
+        <div>i still love you laysa.</div>
+      </div>
+    </div>
+  </div>
 
   <div class="modal" id="poemModal" onclick="closePoem(event)">
     <div class="modal-content">
@@ -1001,7 +1169,151 @@ I just know it's funny how
 The shortest messages
 
 Can become the longest calls.`
+},
+{
+title: "For a Few Seconds.",
+date: "Poem 15",
+body: `No dogs this time.
+No boats.
+No butterflies trying to find their way home.
+
+Just you and me.
+
+Because sometimes the truth
+Doesn't need a disguise,
+And no story I could write
+Would ever be prettier than your eyes.
+
+We kissed today.
+
+That's it.
+That's the poem.
+
+At least part of it.
+
+Because for a few seconds,
+The world stopped making noise,
+There were no questions,
+No wrong choices.
+
+No wondering what comes next,
+No wondering where we stand,
+Just your lips,
+And my shaking hands.
+
+Maybe to you,
+It wasn't all that much,
+
+Maybe it was only a kiss,
+Maybe it was only a touch.
+
+But to me,
+It felt like finding air,
+
+Like every part of my life,
+Had somehow led me there.
+
+And maybe that's unfair.
+
+Maybe moments don't belong
+To both people the same way,
+Maybe what felt like forever to me
+Was just another Monday.
+
+Still,
+I wouldn't trade it.
+Not for anything.
+
+Because for those few seconds,
+Everything felt right,
+Like the universe finally stopped arguing
+And called a truce for the night.
+
+I've said stupid things.
+More than I'd ever admit.
+Some out of pride,
+Some because I thought being hurt gave me permission for it.
+
+Some because alcohol convinced me,
+That it knew what to say,
+When really it just made a fool
+Of somebody who should've walked away.
+
+And for all of those moments,
+The ones I'd take back if I could,
+
+I'm sorry.
+
+Not the dramatic kind of sorry,
+Not the kind looking for a reply,
+Just the kind that sits quietly
+And wishes it had done better by your side.
+
+Because you deserved patience.
+You deserved peace.
+You deserved somebody
+Who made your worries decrease.
+
+You deserved kindness,
+On the days life wasn't fair,
+And if I failed at giving that,
+Then that's mine to bear.
+
+The truth is,
+You deserved the world.
+Not pieces of it.
+Not promises of it.
+
+The whole thing.
+
+Every sunrise.
+Every opportunity.
+Every beautiful thing,
+This life could possibly be.
+
+And if our story ends here,
+Then maybe that's how it's meant to go,
+Maybe some people arrive
+Just to leave something behind before they go.
+
+If that's true,
+
+Then thank you.
+Thank you for the conversations.
+Thank you for the laughter.
+Thank you for every memory
+I know I'll carry after.
+
+Thank you for letting me know
+What it felt like to care this much.
+
+And thank you for paradise,
+Even if paradise,
+Only lasted one touch.
+
+Because if today was the last page,
+If there's nothing after this,
+
+Then I'd spend the rest of my life
+Grateful for that kiss.
+
+Not because it changed the world,
+Or because it fixed me somehow,
+
+But because for a few perfect seconds,
+The world forgot to spin,
+And all the things I'd been missing,
+Were suddently standing within,
+
+Just you.
+Just me.
+
+And a moment so beautiful.
+
+That every part of me,
+Never really wants to leave.`
 }
+
     ];
 
     const poemGrid = document.getElementById("poemGrid");
@@ -1048,10 +1360,31 @@ Can become the longest calls.`
     }
 
     function openPoem(index) {
+      // Poem 15 = index 14 because arrays start at 0
+      if (index === 14) {
+        const intro = document.getElementById("tulipIntro");
+
+        intro.classList.add("show");
+        document.body.style.overflow = "hidden";
+
+        setTimeout(() => {
+          intro.classList.remove("show");
+          showPoem(index);
+        }, 5000);
+
+        return;
+      }
+
+      showPoem(index);
+    }
+
+    function showPoem(index) {
       const poem = poems[index];
+
       modalDate.textContent = poem.date;
       modalTitle.textContent = poem.title;
       modalPoem.textContent = poem.body;
+
       modal.classList.add("show");
       document.body.style.overflow = "hidden";
     }
