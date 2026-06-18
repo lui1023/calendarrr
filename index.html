@@ -170,6 +170,130 @@
       to { background-position: 220% center; }
     }
 
+
+
+
+    /* Song of the day card */
+    .song-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 20px;
+      width: min(100%, 390px);
+      padding: 14px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(255,255,255,.86), rgba(255,215,234,.72));
+      border: 1px solid rgba(255,255,255,.95);
+      box-shadow: 0 18px 42px rgba(47, 101, 200, .18);
+      backdrop-filter: blur(14px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .song-card::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background: radial-gradient(circle, rgba(255,127,189,.22), transparent 55%);
+      animation: songGlow 5s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes songGlow {
+      0%, 100% {
+        transform: translateX(-12%) rotate(0deg);
+        opacity: .45;
+      }
+
+      50% {
+        transform: translateX(12%) rotate(12deg);
+        opacity: .9;
+      }
+    }
+
+    .song-cover {
+      width: 86px;
+      height: 86px;
+      flex: 0 0 86px;
+      object-fit: cover;
+      border-radius: 18px;
+      box-shadow: 0 12px 28px rgba(0,0,0,.16);
+      position: relative;
+      z-index: 1;
+      background: linear-gradient(135deg, #2f65c8, #ff7fbd 58%, #ffd7ea);
+    }
+
+    .song-info {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      position: relative;
+      z-index: 1;
+      min-width: 0;
+    }
+
+    .song-label {
+      font-size: .74rem;
+      font-weight: 900;
+      color: #c2185b;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .song-title {
+      font-size: 1.22rem;
+      font-weight: 900;
+      color: #24324a;
+      line-height: 1.15;
+    }
+
+    .song-artist {
+      font-size: .95rem;
+      font-weight: 700;
+      color: rgba(36,50,74,.7);
+    }
+
+    .playing-bars {
+      display: flex;
+      align-items: end;
+      gap: 4px;
+      height: 22px;
+      margin-top: 8px;
+    }
+
+    .playing-bars span {
+      display: block;
+      width: 5px;
+      height: 8px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #ff7fbd, #2f65c8);
+      animation: musicBar 1s ease-in-out infinite;
+    }
+
+    .playing-bars span:nth-child(2) {
+      animation-delay: .15s;
+    }
+
+    .playing-bars span:nth-child(3) {
+      animation-delay: .3s;
+    }
+
+    .playing-bars span:nth-child(4) {
+      animation-delay: .45s;
+    }
+
+    @keyframes musicBar {
+      0%, 100% {
+        height: 7px;
+        opacity: .7;
+      }
+
+      50% {
+        height: 22px;
+        opacity: 1;
+      }
+    }
+
     .hero-card p {
       font-size: clamp(1rem, 2vw, 1.2rem);
       line-height: 1.75;
@@ -579,13 +703,26 @@
         <div class="eyebrow">✍️ poems for Laysa</div>
         <h1>little words,<br><span class="gradient-text">big feelings.</span></h1>
         <p>
-  <i>I'd write these every day for the rest of my life if it meant I could give you something to look forward to.</i>
-</p>
+          <i>I'd write these every day for the rest of my life if it meant I could give you something to look forward to.</i>
+        </p>
 
-<p>
-  Song of the day: Sirena - Danny Lux 🎵🎵🎵
-</p>
-      </div>
+                <div class="song-card" aria-label="Song of the Day">
+          <img id="songCover" class="song-cover" src="" alt="Song Cover">
+
+          <div class="song-info">
+            <span class="song-label">🎵 Song of the Day</span>
+            <span id="songTitle" class="song-title"></span>
+            <span id="songArtist" class="song-artist"></span>
+
+            <div class="playing-bars" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        </div>
+</div>
     </section>
 
     <section id="poemCollection">
@@ -631,6 +768,12 @@
   </div>
 
   <script>
+    const SONG_OF_THE_DAY = {
+      title: "Sin Miedo a Nada",
+      artist: "Alex Ubago",
+      cover: "sinmiedo.jpg"
+    };
+
     const poems = [
       {
         title: "Her Favorite Color Was Blue.",
@@ -647,7 +790,7 @@
         `
       },
       {
-        title: "To be Honest",
+        title: "To be Honest.",
         date: "Poem 02",
         body: `Like a leaf in the wind,
         I was tossed and I turned,
@@ -671,7 +814,7 @@
         `
       },
       {
-        title: "Another Day, Another Drop",
+        title: "Another Day, Another Drop.",
         date: "Poem 03",
         body: `It comes and goes,
         Never quite the same,
@@ -693,7 +836,7 @@
         It's just another day, another drop, but it's a drop that holds her name,`
       },
       {
-        title: "A Quiet Home",
+        title: "A Quiet Home.",
         date: "Poem 04",
         body: `The moonlight spills like honey,
         Through the windows filled with dreams,
@@ -723,7 +866,7 @@
 
       },
       {
-        title: "His Reflection",
+        title: "His Reflection.",
         date: "Poem 05",
         body: `He sits across from it,
         It stares back at him,
@@ -745,7 +888,7 @@
         He realizes that he's been waiting for himself to be found.`
       },
       {
-        title: "Those Neighborhood Dogs",
+        title: "Those Neighborhood Dogs.",
         date: "Poem 06",
         body: `Every afternoon, 
         The neighborhood dogs come out to play,
@@ -777,7 +920,7 @@
         `
       },
       {
-        title: "You The Birthday",
+        title: "You The Birthday.",
         date: "Poem 07",
         body: `It's not her birthday,
         I checked twice today,
@@ -801,7 +944,7 @@
         `
       },
       {
-        title: "Floatin Like a Boat",
+        title: "Floatin Like a Boat.",
         date: "Poem 08",
         body: `He spent years patching holes,
         In a boat that wouldn't sink,
@@ -829,7 +972,7 @@
         Was never meant to sail away.`
       },
       {
-        title: "Her Hair",
+        title: "Her Hair.",
         date: "Poem 09",
         body: `He notices her hair,
         More often than he'll admit,
@@ -1034,7 +1177,7 @@ body: `A shadow followed quietly,
       Without being asked to.`
     },
 {
-  title: "The Tunnel",
+  title: "The Tunnel.",
 date: "Poem 13",
 body: `Two hamsters lived,
 On opposite sides,
@@ -1312,7 +1455,126 @@ And a moment so beautiful.
 
 That every part of me,
 Never really wants to leave.`
-}
+},
+
+{
+title: "The Highs & Lows.",
+date: "Poem 16",
+body: `People talk about highs and lows,
+
+But not the way I mean.
+
+The high was never drugs,
+It was seeing you in between.
+
+Just passing by,
+Like any other day,
+
+Yet somehow my whole mood
+Would drift your way.
+
+And the lows weren't sadness,
+Or feeling blue,
+
+They were the nights
+Spent begging life for you.
+
+Funny how that works,
+
+The highest I've ever been
+Was watching you walk near.
+
+The lowest I've ever gotten
+Was dropping every ounce of pride I had here.
+
+Still I'd take both,
+
+The rush and the fall,
+
+Because a life without either
+Wouldn't feel like much at all.
+`
+},
+{
+title: "A Tulip's Excuse.",
+date: "Poem 17",
+body: `
+A tulip once said,
+
+"I face the sun the same as every day."
+
+And maybe that was true,
+
+In its own way.
+
+The morning came,
+
+The petals stretched wide,
+
+The light touched everything,
+
+Not just one side.
+
+So the tulip shrugged,
+
+Or as much as flowers do,
+
+And said,
+
+"What else am I supposed to do?"
+
+But the garden noticed.
+
+The bees did too.
+
+There was one patch of sunlight
+
+It always seemed drawn to.
+
+Not by much,
+
+Just enough to tell,
+
+The kind of difference
+
+A flower knows well.
+
+The tulip insisted,
+
+"It's nothing at all."
+
+Yet somehow its colors looked brighter
+
+Whenever that light would fall.
+
+Maybe it happened on its own.
+
+Maybe that's partly right.
+
+But some things don't lean that far
+
+Without a reason toward the light.
+
+And if the tulip ever stops
+
+Long enough to see,
+
+It might realize
+
+The sun was never shining equally.
+
+`
+},
+
+{
+title: "Nothing yet </3",
+date: "Poem 18",
+body: `
+Nothing to see yet! Unless you'd like to see me heh. (Hopefully I upload before 7pm or you'll see this but:
+
+I'm never giving up on you so sucks to suck hah, I literally daydream about you on the busiest of days.)
+`
+},
 
     ];
 
@@ -1326,6 +1588,32 @@ Never really wants to leave.`
     const today = new Date();
     const elapsed = today - poemStartDate;
     const unlockedPoemCount = Math.max(1, Math.min(poems.length, Math.floor(elapsed / (1000 * 60 * 60 * 24)) + 1));
+
+    function loadSongOfTheDay() {
+      const cover = document.getElementById("songCover");
+      const title = document.getElementById("songTitle");
+      const artist = document.getElementById("songArtist");
+
+      cover.src = SONG_OF_THE_DAY.cover;
+      cover.alt = `${SONG_OF_THE_DAY.title} cover`;
+
+      cover.onerror = () => {
+        cover.style.display = "none";
+        const fallback = document.createElement("div");
+        fallback.className = "song-cover";
+        fallback.style.display = "flex";
+        fallback.style.alignItems = "center";
+        fallback.style.justifyContent = "center";
+        fallback.style.color = "white";
+        fallback.style.fontSize = "2.8rem";
+        fallback.style.fontWeight = "900";
+        fallback.textContent = "♪";
+        cover.parentNode.insertBefore(fallback, cover);
+      };
+
+      title.textContent = SONG_OF_THE_DAY.title;
+      artist.textContent = SONG_OF_THE_DAY.artist;
+    }
 
     function renderPoems() {
       poemGrid.innerHTML = "";
@@ -1430,6 +1718,7 @@ function spawnHeart() {
 }
 
     renderPoems();
+    loadSongOfTheDay();
     setInterval(spawnHeart, 650);
   </script>
   <script>
